@@ -58,7 +58,7 @@ impl DirectoryCommand {
             let preprocessor = Preprocessor::new(self.define.clone());
             let output = path.to_str().unwrap().replace(&self.input, &self.output);
             let raw = fs::read_to_string(path).unwrap();
-            let res = preprocessor.process_file(&raw);
+            let res = preprocessor.process_file(path.to_str().unwrap());
 
             if res.is_err() {
                 println!("Error: {}", res.err().unwrap());
@@ -67,7 +67,7 @@ impl DirectoryCommand {
 
             let processed = res.unwrap();
 
-            if compare_diff(&raw, &processed) {
+            if raw.trim() == processed.trim() {
                 println!("Skipping {}", path.to_str().unwrap());
                 continue;
             }
@@ -82,10 +82,6 @@ impl DirectoryCommand {
             .unwrap();
             let mut file = fs::File::create(&output).unwrap();
             io::Write::write_all(&mut file, processed.as_bytes()).unwrap();
-
-            if Preprocessor::same_file(path, Path::new(&output)).unwrap() {
-                fs::remove_file(output).unwrap();
-            }
         }
     }
 }

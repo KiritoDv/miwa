@@ -46,8 +46,8 @@ impl Preprocessor {
 
         Ok(true)
     }
-    pub fn process_file(mut self, buffer: &str) -> Result<String, String> {
-        let res = gpp::process_str(buffer, &mut self.context);
+    pub fn process_file(mut self, path: &str) -> Result<String, String> {
+        let res = gpp::process_file(path, &mut self.context);
         if res.is_err() {
             return Err(format!("Error: {}", res.err().unwrap()));
         }
